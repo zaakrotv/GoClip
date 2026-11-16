@@ -1,11 +1,11 @@
 {
-  "name": "autoclip",
-  "productName": "AutoClip",
+  "name": "goclip",
+  "productName": "GoClip",
   "version": "0.3.2",
   "description": "Surveille des chaînes Twitch, enregistre les lives et fabrique des clips verticaux automatiquement",
   "main": "./out/main/index.js",
   "private": true,
-  "author": "AutoClip",
+  "author": "GoClip",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",

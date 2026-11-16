@@ -1,6 +1,11 @@
-# Fabrication de l'installeur Windows : npm run dist  →  dist/AutoClip-Setup-<version>.exe
+# Fabrication de l'installeur Windows : npm run dist  →  dist/GoClip-Setup-<version>.exe
 appId: fr.autoclip.app
-productName: AutoClip
+productName: GoClip
+# Nom interne gardé (AutoClip.exe, données dans %APPDATA%\AutoClip) : les AutoClip déjà installés
+# passent à GoClip par la mise à jour sans rien perdre (réglages, outils, lancement avec Windows).
+executableName: AutoClip
+extraMetadata:
+  productName: AutoClip
 directories:
   output: dist
   buildResources: resources
@@ -22,10 +27,10 @@ nsis:
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
-  artifactName: AutoClip-Setup-${version}.${ext}
-  shortcutName: AutoClip
+  artifactName: GoClip-Setup-${version}.${ext}
+  shortcutName: GoClip
 # Mises à jour automatiques : chaque version publiée avec « npm run release » sur GitHub
-# est proposée à tous ceux qui ont installé AutoClip. Remplace CHANGE-MOI par ton pseudo GitHub
+# est proposée à tous ceux qui ont installé GoClip. Remplace CHANGE-MOI par ton pseudo GitHub
 # (dépôt public « autoclip » ; voir README, section « Publier une mise à jour »).
 publish:
   provider: github

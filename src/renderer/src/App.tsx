@@ -43,7 +43,7 @@ export function App() {
         <div className="brand">
           <span className="logo">✂</span>
           <div>
-            <b>AutoClip</b>
+            <b>GoClip</b>
             <small>{recording > 0 ? `● ${recording} live${recording > 1 ? 's' : ''} enregistré${recording > 1 ? 's' : ''}` : 'Clips automatiques'}</small>
           </div>
         </div>
@@ -88,7 +88,7 @@ export function App() {
         {state?.notice && <div className="banner warn">{state.notice}</div>}
         {state?.update.status === 'ready' && (
           <div className="banner ok-banner">
-            <span>La version {state.update.version} d’AutoClip est prête.</span>
+            <span>La version {state.update.version} de GoClip est prête.</span>
             <button className="btn primary small" onClick={() => void api().installUpdate()}>
               Redémarrer et mettre à jour
             </button>

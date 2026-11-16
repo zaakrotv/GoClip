@@ -1,4 +1,4 @@
-// Dessine l'icône d'AutoClip (PNG 512x512) sans aucune dépendance.
+// Dessine l'icône de GoClip (PNG 512x512) sans aucune dépendance.
 // Usage : node scripts/make-icon.mjs
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { deflateSync } from 'node:zlib'
@@ -20,12 +20,12 @@ function blend(x, y, r, g, b, a) {
   px[i + 3] = Math.round(oa * 255)
 }
 
-// Coverage anti-aliasée d'une forme définie par une distance signée.
-function shape(sdf, color) {
+// Coverage anti-aliasée d'une forme définie par une distance signée (soft > 1 : bord flou, pour l'ombre).
+function shape(sdf, color, soft = 1) {
   for (let y = 0; y < S; y++) {
     for (let x = 0; x < S; x++) {
       const d = sdf(x + 0.5, y + 0.5)
-      const cov = Math.min(1, Math.max(0, 0.5 - d))
+      const cov = Math.min(1, Math.max(0, 0.5 - d / soft))
       if (cov > 0) {
         const [r, g, b, a] = typeof color === 'function' ? color(x, y) : color
         blend(x, y, r, g, b, a * cov)
@@ -39,7 +39,6 @@ const roundRect = (x0, y0, x1, y1, rad) => (x, y) => {
   const cy = Math.max(y0 + rad, Math.min(y1 - rad, y))
   return Math.hypot(x - cx, y - cy) - rad
 }
-const circle = (cx, cy, r) => (x, y) => Math.hypot(x - cx, y - cy) - r
 function triangle(ax, ay, bx, by, cx, cy) {
   const edges = [
     [ax, ay, bx, by],
@@ -47,33 +46,36 @@ function triangle(ax, ay, bx, by, cx, cy) {
     [cx, cy, ax, ay]
   ]
   return (x, y) => {
-    let inside = true
+    // Dedans = du même côté des trois bords, quel que soit le sens des sommets.
+    let pos = 0
+    let neg = 0
     let best = Infinity
     for (const [x0, y0, x1, y1] of edges) {
       const ex = x1 - x0
       const ey = y1 - y0
       const len = Math.hypot(ex, ey)
       const side = (ex * (y - y0) - ey * (x - x0)) / len
-      if (side < 0) inside = false
+      if (side > 0) pos++
+      else if (side < 0) neg++
       const t = Math.max(0, Math.min(1, ((x - x0) * ex + (y - y0) * ey) / (len * len)))
       best = Math.min(best, Math.hypot(x - (x0 + t * ex), y - (y0 + t * ey)))
     }
-    return inside ? -best : best
+    return pos === 0 || neg === 0 ? -best : best
   }
 }
 
-// Fond : carré arrondi dégradé violet → rose.
-shape(roundRect(16, 16, 496, 496, 110), (x, y) => {
+// Fond : carré arrondi dégradé orange → rose.
+shape(roundRect(16, 16, 496, 496, 112), (x, y) => {
   const t = (x + y) / (2 * S)
-  return [mix(124, 236, t), mix(58, 72, t), mix(237, 153, t), 1]
+  return [mix(255, 236, t), mix(159, 22, t), mix(28, 110, t), 1]
 })
-// Cadre vertical (format short) en blanc translucide.
-shape((x, y) => Math.abs(roundRect(176, 96, 336, 416, 26)(x, y)) - 9, [255, 255, 255, 0.9])
-// Bouton lecture.
-shape(triangle(224, 196, 224, 316, 316, 256), [255, 255, 255, 1])
-// Point d'enregistrement.
-shape(circle(392, 128, 46), [255, 255, 255, 1])
-shape(circle(392, 128, 30), [239, 68, 68, 1])
+// Le « Go » : bouton lecture aux coins arrondis, lancé à toute vitesse (trois traits derrière).
+const play = triangle(258, 180, 258, 332, 390, 256)
+const lines = [roundRect(130, 190, 208, 222, 16), roundRect(94, 240, 208, 272, 16), roundRect(130, 290, 208, 322, 16)]
+const mark = (x, y) => Math.min(play(x, y) - 30, ...lines.map((l) => l(x, y)))
+// Ombre douce sous le dessin, puis le dessin en blanc.
+shape((x, y) => mark(x, y - 10), [90, 0, 40, 0.28], 22)
+shape(mark, [255, 255, 255, 1])
 
 function crc32(buf) {
   let c = ~0

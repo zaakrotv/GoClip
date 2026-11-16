@@ -1,4 +1,4 @@
-# AutoClip
+# GoClip
 
 Application Windows qui surveille des chaînes Twitch, **enregistre les lives automatiquement**,
 repère les meilleurs moments et en fait des **clips verticaux montés** (TikTok, Shorts, Reels),
@@ -9,13 +9,13 @@ mais entièrement réécrite, sans compte ni abonnement, et faite pour être mod
 
 ## Installer
 
-Lance l'installeur `AutoClip-Setup-<version>.exe` : la dernière version est sur la page GitHub du
-projet, rubrique **Releases** (ou dans `dist/` après `npm run dist`). Si AutoClip est déjà installé,
+Lance l'installeur `GoClip-Setup-<version>.exe` : la dernière version est sur la page GitHub du
+projet, rubrique **Releases** (ou dans `dist/` après `npm run dist`). Si GoClip est déjà installé,
 il se met à jour tout seul. L'installeur n'est pas signé : si Windows affiche
 « Windows a protégé votre ordinateur », clique sur **Informations complémentaires** puis
 **Exécuter quand même**.
 
-Au premier lancement, AutoClip télécharge tout seul ses outils depuis leurs sites officiels :
+Au premier lancement, GoClip télécharge tout seul ses outils depuis leurs sites officiels :
 Streamlink avec FFmpeg (GitHub de Streamlink), whisper.cpp (GitHub de whisper.cpp) et le modèle
 de transcription (Hugging Face). Compte environ 300 Mo ; la progression s'affiche en haut de l'écran.
 
@@ -46,17 +46,17 @@ Autres commandes :
 | `npm run dev` | mode développement (rechargement à chaud de l'interface) |
 | `npm test` | tests de la logique (détection, tchat, voix, sous-titres, cadrage, intro, mots, file des travaux, publication) |
 | `npm run typecheck` | vérification des types TypeScript |
-| `npm run dist` | fabrique l'installeur `dist/AutoClip-Setup-<version>.exe` |
+| `npm run dist` | fabrique l'installeur `dist/GoClip-Setup-<version>.exe` |
 | `npm run release` | fabrique l'installeur et le publie sur GitHub (mise à jour automatique pour tout le monde) |
 | `npm run fonts` | retélécharge les polices libres des sous-titres (et affiche leur valeur `cell`) |
 
-`npm run dist` doit être lancé depuis un dossier au chemin court (par exemple `C:\dev\autoclip`) :
+`npm run dist` doit être lancé depuis un dossier au chemin court (par exemple `C:\dev\goclip`) :
 l'outil NSIS qui fabrique l'installeur refuse les chemins de plus de 260 caractères.
 
 ## Comment s'en servir
 
 1. **Chaînes** : tape un pseudo (des chaînes existantes sont proposées, avec 🔴 si elles sont
-   en live) ou colle un lien. Dès qu'une chaîne passe en live, AutoClip l'enregistre avec son tchat
+   en live) ou colle un lien. Dès qu'une chaîne passe en live, GoClip l'enregistre avec son tchat
    (même fenêtre fermée : il reste dans la barre des tâches).
 2. **Pendant le live**, le clip est fabriqué tout de suite et arrive dans **Clips → À trier**
    (sans attendre la fin du live) quand :
@@ -73,7 +73,7 @@ l'outil NSIS qui fabrique l'installeur refuse les chemins de plus de 260 caract�
      calcul à chaque fois, une seule écoute à la fois même avec plusieurs chaînes). « Éclipse »,
      « clic » et « le / un / mon clip » (quand on parle d'un clip sans en demander un) sont ignorés.
      Ces clips portent l'étiquette **🎙 « clip » dit**.
-   La carte de la chaîne montre ce qu'AutoClip a fait du dernier « clip » du tchat, avec un bouton
+   La carte de la chaîne montre ce que GoClip a fait du dernier « clip » du tchat, avec un bouton
    **Faire confiance à …**. **Réglages → Durée des clips** : automatique, ou fixe (de 15 s à 3 min),
    avec les secondes gardées après le moment signalé.
 3. **À la fin du live**, l'analyse trouve les autres moments forts (tchat qui s'emballe, son qui
@@ -130,7 +130,7 @@ l'outil NSIS qui fabrique l'installeur refuse les chemins de plus de 260 caract�
 9. **Publier** : glisse un clip terminé sur l'agenda (vue semaine ou mois), ou clique sur
    **⭐ Programmer** pour le placer au meilleur créneau libre. Pour chaque publication : date et
    heure, réseaux (TikTok, Instagram Reels, YouTube Shorts), description et hashtags
-   (**Remplir tout seul**). Déplace une publication en la glissant. À l'heure prévue, AutoClip te
+   (**Remplir tout seul**). Déplace une publication en la glissant. À l'heure prévue, GoClip te
    prévient ; dans la publication : **🎬 Glisser la vidéo** dans la page d'envoi du réseau,
    **📋 Copier le texte**, **🌐 Ouvrir** le site, puis **✓ C'est publié**.
 
@@ -144,7 +144,7 @@ tes habitudes (réseaux, publications par jour, hashtags ajoutés à chaque fois
 **L'IA gratuite** (par défaut, sans clé ni compte) : **✨ Demander à l'IA** lit tes horaires de
 live, tes jeux et les meilleurs créneaux, et écrit un résumé et des conseils adaptés (gardés une
 semaine) ; **✨ Écrire avec l'IA** propose la description et les hashtags d'un clip à partir de ce
-qui y est dit. Elle tourne sur ton PC : au premier clic, AutoClip télécharge le moteur llama.cpp
+qui y est dit. Elle tourne sur ton PC : au premier clic, GoClip télécharge le moteur llama.cpp
 (version b12322, github.com/ggml-org/llama.cpp) et le modèle Qwen 3.5 4B (licence Apache 2.0,
 ≈ 2,7 Go, une seule fois ; un téléchargement coupé reprend où il s'était arrêté). Ensuite elle
 marche sans internet et rien ne quitte le PC. Elle utilise la carte graphique quand il y en a une
@@ -162,7 +162,7 @@ l'anglais et invente). Le moteur est lancé avec `VK_LOADER_LAYERS_DISABLE=~impl
 l'incrustation d'Overwolf (et d'autres logiciels du même genre) le bloque au démarrage. Sur
 processeur, il tourne depuis `outils\llama\cpu\` (les mêmes fichiers, sans la partie Vulkan).
 Smart App Control (Windows 11) peut bloquer quelques minutes des fichiers qu'il ne connaît pas
-encore : AutoClip le dit et il suffit de réessayer.
+encore : GoClip le dit et il suffit de réessayer.
 
 **Option payante : Claude** (repliée sous l'IA gratuite) : avec une clé API Anthropic
 (console.anthropic.com, payée à l'usage) et « IA des boutons ✨ : Claude », Claude cherche en plus
@@ -171,14 +171,14 @@ indicatif d'une demande de conseils : environ 0,05 $ avec Haiku, 0,15 $ avec Son
 Opus ; une description coûte bien moins. La clé est chiffrée par Windows sur ton PC et n'est jamais
 montrée à l'interface.
 
-Pourquoi AutoClip ne publie pas tout seul : TikTok et YouTube gardent en **privé** les vidéos
+Pourquoi GoClip ne publie pas tout seul : TikTok et YouTube gardent en **privé** les vidéos
 envoyées par une application qui n'a pas passé leur audit, et Instagram n'accepte que les comptes
-professionnels reliés à une page Facebook. AutoClip prépare donc tout (vidéo, texte, rappel) et te
+professionnels reliés à une page Facebook. GoClip prépare donc tout (vidéo, texte, rappel) et te
 laisse cliquer sur « Publier » sur le site.
 
 ## Mises à jour automatiques
 
-AutoClip vérifie au démarrage (puis toutes les quelques heures) s'il existe une nouvelle version,
+GoClip vérifie au démarrage (puis toutes les quelques heures) s'il existe une nouvelle version,
 la télécharge en arrière-plan et propose **Redémarrer pour mettre à jour** (bandeau en haut, ou
 Réglages → Application). Ceux à qui tu as donné l'installeur reçoivent donc tes nouvelles versions.
 
@@ -217,7 +217,7 @@ ni dans un fichier) : il donne le droit de publier à ta place. S'il a fuité, s
 (même menu que pour le créer) et crée-en un nouveau.
 
 **Important** : les installeurs fabriqués avant que ton pseudo soit réglé ne savent pas où chercher
-les mises à jour. Toi et tes amis devez installer **une fois** AutoClip depuis cette page GitHub ;
+les mises à jour. Toi et tes amis devez installer **une fois** GoClip depuis cette page GitHub ;
 ensuite, chaque nouvelle version arrive toute seule (bandeau « Redémarrer et mettre à jour »).
 
 `publier.cmd -Essai` fabrique l'installeur sans rien publier, pour vérifier que tout marche.
@@ -236,13 +236,13 @@ variable `AUTOCLIP_UPDATE_URL=http://127.0.0.1:8123` pointant vers un dossier co
 
 Les deux premiers dossiers se changent dans Réglages.
 
-## Essayer une copie sans toucher à ton AutoClip
+## Essayer une copie sans toucher à ton GoClip
 
 Variables d'environnement utiles pour tester une version (avec `npm start` ou une copie compilée) :
 
 | Variable | Effet |
 | --- | --- |
-| `AUTOCLIP_DATA=<dossier>` | réglages, clips et pattes dans ce dossier au lieu de `%APPDATA%\AutoClip` ; la copie ne réveille pas l'AutoClip installé |
+| `AUTOCLIP_DATA=<dossier>` | réglages, clips et pattes dans ce dossier au lieu de `%APPDATA%\AutoClip` ; la copie ne réveille pas le GoClip installé |
 | `AUTOCLIP_SILENT=1` | aucune notification Windows (elles s'écrivent dans la console) |
 | `AUTOCLIP_DEBUG=voix` | affiche tout ce que l'écoute du streamer entend |
 | `AUTOCLIP_UPDATE_URL=<adresse>` | cherche les mises à jour sur un serveur local (voir plus haut) |

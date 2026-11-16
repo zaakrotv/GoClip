@@ -25,7 +25,7 @@ if ($OublierJeton) {
 }
 
 Write-Host ''
-Write-Host "=== Publier une nouvelle version d'AutoClip ===" -ForegroundColor Magenta
+Write-Host "=== Publier une nouvelle version de GoClip ===" -ForegroundColor Magenta
 if ($Essai) { Write-Host '(essai : rien ne sera publié)' -ForegroundColor Yellow }
 
 # 1. Pseudo GitHub : demandé une seule fois, puis gardé dans electron-builder.yml.
@@ -127,7 +127,7 @@ try {
   Pop-Location
 }
 $dist = Join-Path $dossier 'dist'
-$exe = Join-Path $dist "AutoClip-Setup-$version.exe"
+$exe = Join-Path $dist "GoClip-Setup-$version.exe"
 if (-not (Test-Path $exe)) { throw "Installeur introuvable : $exe" }
 if ($dossier -ne $projet) {
   New-Item -ItemType Directory -Force (Join-Path $projet 'dist') | Out-Null
@@ -136,7 +136,7 @@ if ($dossier -ne $projet) {
 
 if ($Essai) {
   Write-Host ''
-  Write-Host "Essai réussi : AutoClip-Setup-$version.exe est dans le dossier dist (rien n'a été publié)." -ForegroundColor Green
+  Write-Host "Essai réussi : GoClip-Setup-$version.exe est dans le dossier dist (rien n'a été publié)." -ForegroundColor Green
   return
 }
 
@@ -175,4 +175,4 @@ if ($release.draft) {
 Write-Host ''
 Write-Host "Publié ! Version $version en ligne." -ForegroundColor Green
 Write-Host "Page à envoyer à tes amis : https://github.com/$owner/autoclip/releases/latest"
-Write-Host 'Ceux qui ont déjà installé AutoClip depuis cette page recevront la mise à jour tout seuls.'
+Write-Host 'Ceux qui ont déjà installé GoClip depuis cette page recevront la mise à jour tout seuls.'

@@ -149,7 +149,7 @@ export function SettingsPage({ state }: { state: AppState | null }) {
 
       <Section title="Application">
         <div className="dep-row">
-          <span>AutoClip version {state?.version ?? '…'}</span>
+          <span>GoClip version {state?.version ?? '…'}</span>
           {state?.update.status === 'ready' ? (
             <Pill tone="ok">Version {state.update.version} prête</Pill>
           ) : state?.update.status === 'downloading' ? (
@@ -165,7 +165,7 @@ export function SettingsPage({ state }: { state: AppState | null }) {
           ) : null}
         </div>
         {state?.update.status === 'unconfigured' ? (
-          <p className="muted small">Les mises à jour automatiques s’activent quand tu publies AutoClip sur GitHub (voir le README, « Publier une mise à jour ») : toutes les personnes qui l’ont installé reçoivent alors chaque nouvelle version toute seule.</p>
+          <p className="muted small">Les mises à jour automatiques s’activent quand tu publies GoClip sur GitHub (voir le README, « Publier une mise à jour ») : toutes les personnes qui l’ont installé reçoivent alors chaque nouvelle version toute seule.</p>
         ) : (
           <div className="row wrap">
             <button className="btn" disabled={state?.update.status === 'checking' || state?.update.status === 'downloading'} onClick={() => void api().checkForUpdates()}>
@@ -293,7 +293,7 @@ export function SettingsPage({ state }: { state: AppState | null }) {
         <ChatWordsInput value={settings.detection.chatWords} onChange={(chatWords) => det({ chatWords })} />
         <p className="muted small">
           {settings.detection.chatWords.includes('clip') ? 'Avec « clip », ses variantes marchent aussi (clips, clippe, clippez…). ' : ''}
-          Pour donner aussi un titre : <b>« {chatWord} : headshot »</b> → le clip s’appelle « headshot » dans AutoClip (tu peux le changer dans le montage). « {chatWord} » tout seul marche toujours.
+          Pour donner aussi un titre : <b>« {chatWord} : headshot »</b> → le clip s’appelle « headshot » dans GoClip (tu peux le changer dans le montage). « {chatWord} » tout seul marche toujours.
         </p>
         <Select
           label={`Il faut que « ${chatWord} » soit écrit par`}
@@ -391,7 +391,7 @@ export function SettingsPage({ state }: { state: AppState | null }) {
       </Section>
 
       <Section title="Démarrage">
-        <Toggle label="Lancer AutoClip avec Windows" hint="Il démarre discrètement dans la barre des tâches pour ne rater aucun live" checked={settings.openAtLogin} onChange={set('openAtLogin')} />
+        <Toggle label="Lancer GoClip avec Windows" hint="Il démarre discrètement dans la barre des tâches pour ne rater aucun live" checked={settings.openAtLogin} onChange={set('openAtLogin')} />
       </Section>
     </div>
   )

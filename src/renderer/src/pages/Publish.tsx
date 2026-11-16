@@ -293,7 +293,7 @@ function PostPanel(props: { post: Post; clip: Clip | undefined; prefs: PublishPr
 
         <Section title="Publier">
           <p className="muted small">
-            TikTok, Instagram et YouTube réservent la publication automatique aux applications qu’ils ont auditées. À l’heure prévue, AutoClip te prévient : glisse la vidéo dans la page qui s’ouvre, colle le texte (Ctrl+V) et publie.
+            TikTok, Instagram et YouTube réservent la publication automatique aux applications qu’ils ont auditées. À l’heure prévue, GoClip te prévient : glisse la vidéo dans la page qui s’ouvre, colle le texte (Ctrl+V) et publie.
           </p>
           {draft.networks.map((n) => {
             const info = networkInfo(n)
@@ -728,7 +728,7 @@ export function PublishPage({ openId }: { openId?: string }) {
       <header className="publish-head">
         <div>
           <h1>Publier</h1>
-          <p className="muted">Glisse un clip terminé sur l’agenda. Les ⭐ sont les meilleurs créneaux ; à l’heure prévue, AutoClip te prévient et prépare la vidéo et le texte.</p>
+          <p className="muted">Glisse un clip terminé sur l’agenda. Les ⭐ sont les meilleurs créneaux ; à l’heure prévue, GoClip te prévient et prépare la vidéo et le texte.</p>
         </div>
         <div className="row wrap">
           <div className="tabs">

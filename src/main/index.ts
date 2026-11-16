@@ -458,7 +458,7 @@ function createWindow(): void {
     show: false,
     backgroundColor: '#0e0f13',
     autoHideMenuBar: true,
-    title: 'AutoClip',
+    title: 'GoClip',
     icon: iconPath(),
     webPreferences: { preload: join(__dirname, '../preload/index.js'), sandbox: true, contextIsolation: true, nodeIntegration: false }
   })
@@ -471,7 +471,7 @@ function createWindow(): void {
     e.preventDefault()
     win?.hide()
     if (!store.getSettings().onboarded || store.getSettings().channels.length > 0) {
-      notify('AutoClip continue en arrière-plan', 'Les lives sont toujours surveillés. Clic droit sur l’icône pour quitter.')
+      notify('GoClip continue en arrière-plan', 'Les lives sont toujours surveillés. Clic droit sur l’icône pour quitter.')
     }
   })
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -505,7 +505,7 @@ function showWindow(): void {
 function updateTray(): void {
   if (!tray) return
   const rec = channelStates().filter((c) => c.status === 'recording').length
-  tray.setToolTip(rec > 0 ? `AutoClip — ${rec} live${rec > 1 ? 's' : ''} en enregistrement` : 'AutoClip')
+  tray.setToolTip(rec > 0 ? `GoClip — ${rec} live${rec > 1 ? 's' : ''} en enregistrement` : 'GoClip')
 }
 
 function createTray(): void {
@@ -513,7 +513,7 @@ function createTray(): void {
   tray = new Tray(img)
   tray.setContextMenu(
     Menu.buildFromTemplate([
-      { label: 'Ouvrir AutoClip', click: showWindow },
+      { label: 'Ouvrir GoClip', click: showWindow },
       { label: 'Garder ce moment (touche Clip)', click: () => markMoment() },
       { type: 'separator' },
       {

@@ -246,13 +246,13 @@ export function ChannelsPage({ state }: { state: AppState | null }) {
       <header className="page-head">
         <div>
           <h1>Chaînes suivies</h1>
-          <p className="muted">Dès qu’une chaîne passe en live, AutoClip l’enregistre avec son tchat. Les clips demandés pendant le live (touche Clip, « clip » dans le tchat) arrivent tout de suite dans « À trier » ; les autres moments forts à la fin du live.</p>
+          <p className="muted">Dès qu’une chaîne passe en live, GoClip l’enregistre avec son tchat. Les clips demandés pendant le live (touche Clip, « clip » dans le tchat) arrivent tout de suite dans « À trier » ; les autres moments forts à la fin du live.</p>
         </div>
       </header>
       <ChannelSearch followed={settings?.channels.map((c) => c.login) ?? []} onAdded={() => {}} />
       {settings && settings.channels.length === 0 ? (
         <Empty title="Aucune chaîne pour l’instant" icon="📡">
-          Tape un pseudo Twitch juste au-dessus : AutoClip te propose les chaînes qui existent et te dit si elles sont en live.
+          Tape un pseudo Twitch juste au-dessus : GoClip te propose les chaînes qui existent et te dit si elles sont en live.
         </Empty>
       ) : (
         <div className="grid channels">
