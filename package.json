@@ -1,7 +1,7 @@
 {
   "name": "goclip",
   "productName": "GoClip",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Surveille des chaînes Twitch, enregistre les lives et fabrique des clips verticaux automatiquement",
   "main": "./out/main/index.js",
   "private": true,
