@@ -1,0 +1,34 @@
+# Fabrication de l'installeur Windows : npm run dist  →  dist/AutoClip-Setup-<version>.exe
+appId: fr.autoclip.app
+productName: AutoClip
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - out/main/**
+  - out/preload/**
+  - out/renderer/**
+  - package.json
+extraResources:
+  - from: resources/fonts
+    to: fonts
+  - from: resources/icon.png
+    to: icon.png
+asar: true
+win:
+  target: nsis
+  icon: resources/icon.png
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  artifactName: AutoClip-Setup-${version}.${ext}
+  shortcutName: AutoClip
+# Mises à jour automatiques : chaque version publiée avec « npm run release » sur GitHub
+# est proposée à tous ceux qui ont installé AutoClip. Remplace CHANGE-MOI par ton pseudo GitHub
+# (dépôt public « autoclip » ; voir README, section « Publier une mise à jour »).
+publish:
+  provider: github
+  owner: zaakrotv
+  repo: autoclip
+  releaseType: release

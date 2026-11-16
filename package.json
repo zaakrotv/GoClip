@@ -1,0 +1,37 @@
+{
+  "name": "autoclip",
+  "productName": "AutoClip",
+  "version": "0.3.2",
+  "description": "Surveille des chaînes Twitch, enregistre les lives et fabrique des clips verticaux automatiquement",
+  "main": "./out/main/index.js",
+  "private": true,
+  "author": "AutoClip",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "rolldown tests/logique.test.ts --platform node --format esm --file out/tests/logique.mjs && node out/tests/logique.mjs && rolldown tests/v3.test.ts --platform node --format esm --file out/tests/v3.mjs && node out/tests/v3.mjs && rolldown tests/ia.test.ts --platform node --format esm --file out/tests/ia.mjs && node out/tests/ia.mjs",
+    "fonts": "node scripts/download-fonts.mjs",
+    "icon": "node scripts/make-icon.mjs",
+    "dist": "electron-vite build && electron-builder --win --publish never",
+    "release": "electron-vite build && electron-builder --win --publish always"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "electron": "^45.3.0",
+    "electron-builder": "^26.18.0",
+    "electron-vite": "^6.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
+    "electron-updater": "^6.8.11"
+  }
+}
