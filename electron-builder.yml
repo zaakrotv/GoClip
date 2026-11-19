@@ -31,9 +31,9 @@ nsis:
   shortcutName: GoClip
 # Mises à jour automatiques : chaque version publiée avec « npm run release » sur GitHub
 # est proposée à tous ceux qui ont installé GoClip. Remplace CHANGE-MOI par ton pseudo GitHub
-# (dépôt public « autoclip » ; voir README, section « Publier une mise à jour »).
+# (dépôt public « GoClip » ; voir README, section « Publier une mise à jour »).
 publish:
   provider: github
   owner: zaakrotv
-  repo: autoclip
+  repo: GoClip
   releaseType: release

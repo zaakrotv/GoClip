@@ -187,11 +187,11 @@ Réglages → Application). Ceux à qui tu as donné l'installeur reçoivent don
 **À faire une seule fois** (sur github.com) :
 
 1. Crée un compte GitHub (gratuit).
-2. Crée un dépôt nommé `autoclip`, **public**, en cochant **Add a README file**. Sans ce premier
+2. Crée un dépôt nommé `GoClip`, **public**, en cochant **Add a README file**. Sans ce premier
    fichier, GitHub refuse la publication.
 3. Crée un jeton : photo de profil → **Settings** → **Developer settings** → **Personal access
    tokens** → **Fine-grained tokens** → **Generate new token**. Accès : seulement le dépôt
-   `autoclip`. Permission **Contents : Read and write**. Copie le jeton (il ne s'affiche qu'une
+   `GoClip`. Permission **Contents : Read and write**. Copie le jeton (il ne s'affiche qu'une
    fois) et garde-le pour toi : il donne le droit de publier à ta place.
 
 **À chaque nouvelle version** : double-clique sur `publier.cmd`. Il n'y a rien à taper :
@@ -206,7 +206,7 @@ Réglages → Application). Ceux à qui tu as donné l'installeur reçoivent don
 - le pseudo GitHub n'a été demandé qu'une fois (il est gardé dans `electron-builder.yml`).
 
 Il fabrique l'installeur et le publie. À la fin, il affiche le lien à envoyer à tes amis :
-`https://github.com/<ton-pseudo>/autoclip/releases/latest`.
+`https://github.com/<ton-pseudo>/GoClip/releases/latest`.
 
 `publier.ps1 -Auto` fait la même chose sans jamais poser de question (il s'arrête si le jeton
 n'est pas encore gardé ou si la version est déjà en ligne) : c'est ce que Claude lance quand tu lui

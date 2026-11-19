@@ -38,7 +38,9 @@ if (-not $Essai -and $yml -match 'owner:\s*CHANGE-MOI') {
   Write-Host "Pseudo enregistré : $pseudo"
 }
 $owner = ([regex]'owner:\s*(\S+)').Match((Lire 'electron-builder.yml')).Groups[1].Value
-$depot = "https://api.github.com/repos/$owner/autoclip"
+# Nom du dépôt lu dans electron-builder.yml (le même que celui où les apps installées cherchent les mises à jour).
+$repo = ([regex]'(?m)^\s+repo:\s*(\S+)').Match((Lire 'electron-builder.yml')).Groups[1].Value
+$depot = "https://api.github.com/repos/$owner/$repo"
 
 # 2. Numéro de la nouvelle version (chaque publication doit avoir un numéro plus grand).
 $pkg = Lire 'package.json'
@@ -165,7 +167,7 @@ foreach ($fichier in @($exe, "$exe.blockmap", (Join-Path $dist 'latest.yml'))) {
     Invoke-RestMethod -Method Delete -Uri "$depot/releases/assets/$($enPlace[$nom])" -Headers $auth | Out-Null
   }
   Write-Host "Envoi de $nom ..."
-  $url = "https://uploads.github.com/repos/$owner/autoclip/releases/$($release.id)/assets?name=$([uri]::EscapeDataString($nom))"
+  $url = "https://uploads.github.com/repos/$owner/$repo/releases/$($release.id)/assets?name=$([uri]::EscapeDataString($nom))"
   Invoke-RestMethod -Method Post -Uri $url -Headers $auth -InFile $fichier -ContentType 'application/octet-stream' | Out-Null
 }
 if ($release.draft) {
@@ -174,5 +176,5 @@ if ($release.draft) {
 
 Write-Host ''
 Write-Host "Publié ! Version $version en ligne." -ForegroundColor Green
-Write-Host "Page à envoyer à tes amis : https://github.com/$owner/autoclip/releases/latest"
+Write-Host "Page à envoyer à tes amis : https://github.com/$owner/$repo/releases/latest"
 Write-Host 'Ceux qui ont déjà installé GoClip depuis cette page recevront la mise à jour tout seuls.'
