@@ -4,6 +4,7 @@ import assert from 'node:assert/strict'
 import { sameMoment } from '../src/main/analyze'
 import { chatWeight, clipWord, detectMoments, isTrusted, markedWindow, parseChatLog } from '../src/main/detect'
 import { parseProbe } from '../src/main/ffmpeg'
+import { scaleChain } from '../src/main/render'
 import { assColor, assTime, buildAss } from '../src/main/subtitles'
 import { wordsFromSegments } from '../src/main/transcribe'
 import { parseChannel } from '../src/main/twitch'
@@ -420,6 +421,20 @@ test('toutes les mises en page restent dans l’image', () => {
       }
     }
   }
+})
+
+test('recadrage net : blocs adoucis sur la grille 8x8 de la source, netteté selon l’agrandissement', () => {
+  // Petite caméra agrandie ×2,9 : désenblocage aligné sur la grille, netteté forte.
+  const cam = scaleChain({ src: { x: 44, y: 330, w: 370, h: 240 }, dst: { x: 0, y: 0, w: 1080, h: 700 } })
+  assert.equal(cam, 'crop=374:242:40:328,deblock=filter=weak:block=8,crop=370:240:4:2,scale=1080:700:flags=lanczos+accurate_rnd+full_chroma_int,cas=strength=0.53')
+  // Jeu à peine agrandi : pas de désenblocage, netteté légère.
+  const game = scaleChain({ src: { x: 482, y: 0, w: 956, h: 1080 }, dst: { x: 0, y: 700, w: 1080, h: 1220 } })
+  assert.equal(game, 'crop=956:1080:482:0,scale=1080:1220:flags=lanczos+accurate_rnd+full_chroma_int,cas=strength=0.32')
+  // Image réduite : rien à rattraper.
+  const small = scaleChain({ src: { x: 0, y: 0, w: 1920, h: 1080 }, dst: { x: 0, y: 656, w: 1080, h: 608 } })
+  assert.equal(small, 'crop=1920:1080:0:0,scale=1080:608:flags=lanczos+accurate_rnd+full_chroma_int')
+  // Sans les filtres de netteté (ffmpeg trop ancien).
+  assert.equal(scaleChain({ src: { x: 44, y: 330, w: 370, h: 240 }, dst: { x: 0, y: 0, w: 1080, h: 700 } }, false), 'crop=370:240:44:330,scale=1080:700:flags=lanczos+accurate_rnd+full_chroma_int')
 })
 
 console.log(`\n${passed} test(s) réussi(s)`)

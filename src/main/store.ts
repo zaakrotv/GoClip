@@ -16,7 +16,6 @@ export function defaultSettings(videosDir: string): Settings {
   return {
     recordingsDir: join(videosDir, 'AutoClip', 'Enregistrements'),
     readyDir: join(videosDir, 'AutoClip', 'Clips prêts'),
-    quality: '1080p60,best',
     channels: [],
     hotkey: { enabled: true, accelerator: 'F8', before: 30 },
     detection: {

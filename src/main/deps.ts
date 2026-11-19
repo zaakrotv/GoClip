@@ -7,6 +7,7 @@ import { Readable, Transform } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import type { ReadableStream as WebReadableStream } from 'node:stream/web'
 import type { DepsStatus, WhisperModel } from '../shared/types'
+import { encoderArgs } from './encoders'
 import { depsDir, modelsDir, streamlinkRoot, whisperRoot } from './paths'
 import { run } from './proc'
 
@@ -143,8 +144,10 @@ export async function probeFfmpeg(preferred: 'auto' | 'libx264'): Promise<void> 
   const ass = /\sass\s/.test(filters.stdout)
   let encoder = 'libx264'
   if (preferred === 'auto') {
+    // Essai avec les vrais réglages du rendu (taille, qualité) : une carte graphique qui ne les
+    // accepte pas n'est pas choisie.
     for (const enc of ['h264_nvenc', 'h264_qsv', 'h264_amf']) {
-      const r = await run(ff, ['-hide_banner', '-loglevel', 'error', '-f', 'lavfi', '-i', 'color=black:s=320x240:d=0.3', '-c:v', enc, '-f', 'null', '-'], { timeoutMs: 20_000 })
+      const r = await run(ff, ['-hide_banner', '-loglevel', 'error', '-f', 'lavfi', '-i', 'color=black:s=1080x1920:r=60:d=0.3', ...encoderArgs(enc), '-f', 'null', '-'], { timeoutMs: 20_000 })
       if (r.code === 0) {
         encoder = enc
         break

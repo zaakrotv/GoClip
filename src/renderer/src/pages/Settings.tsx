@@ -228,16 +228,7 @@ export function SettingsPage({ state }: { state: AppState | null }) {
       </Section>
 
       <Section title="Enregistrement">
-        <Select
-          label="Qualité enregistrée"
-          value={settings.quality}
-          options={[
-            { value: '1080p60,best', label: '1080p 60 i/s (meilleure)' },
-            { value: '720p60,720p,best', label: '720p (prend moins de place)' },
-            { value: '480p,best', label: '480p (très léger)' }
-          ]}
-          onChange={set('quality')}
-        />
+        <p className="muted small">Les lives sont toujours enregistrés dans la meilleure qualité proposée par la chaîne : le clip vertical agrandit l’image, une qualité plus basse le rendrait flou.</p>
         <Toggle label="Supprimer le live après l’analyse" hint="Garde seulement les clips (gagne beaucoup de place)" checked={settings.deleteRecordingAfterAnalysis} onChange={set('deleteRecordingAfterAnalysis')} />
       </Section>
 

@@ -5,8 +5,9 @@
 //   [outro]  pareil sur la fin du clip
 import { copyFileSync, existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { computeRegions, extraTimeline, introBlurRadius } from '../shared/presets'
+import { computeRegions, extraTimeline, introBlurRadius, type Rect } from '../shared/presets'
 import type { Clip } from '../shared/types'
+import { encoderArgs } from './encoders'
 import { ffmpeg, ffmpegError, probe } from './ffmpeg'
 import { fontsDir, tempDir } from './paths'
 import type { RunResult } from './proc'
@@ -25,17 +26,24 @@ export interface RenderOptions {
   onProgress?: (fraction: number) => void
 }
 
-function encoderArgs(enc: string): string[] {
-  switch (enc) {
-    case 'h264_nvenc':
-      return ['-c:v', 'h264_nvenc', '-preset', 'p5', '-rc', 'vbr', '-b:v', '12M', '-maxrate', '18M', '-bufsize', '24M', '-pix_fmt', 'yuv420p']
-    case 'h264_qsv':
-      return ['-c:v', 'h264_qsv', '-b:v', '12M', '-maxrate', '18M', '-pix_fmt', 'nv12']
-    case 'h264_amf':
-      return ['-c:v', 'h264_amf', '-b:v', '12M', '-maxrate', '18M', '-pix_fmt', 'nv12']
-    default:
-      return ['-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-pix_fmt', 'yuv420p', '-profile:v', 'high']
+/**
+ * Recadrage d'une zone puis mise à l'échelle, le plus net possible : le clip vertical agrandit la
+ * zone (×1,1 pour le jeu, jusqu'à ×3 pour une petite caméra). Lanczos pour agrandir ; quand la zone
+ * est très agrandie, les blocs de compression du live sont d'abord adoucis (sinon ils deviennent de
+ * gros pavés), sur la grille 8x8 de la source ; enfin une netteté adaptative dosée selon l'agrandissement.
+ */
+export function scaleChain(r: { src: Rect; dst: Rect }, sharpen = true): string {
+  const { x, y, w, h } = r.src
+  const zoom = r.dst.w / w
+  let chain = `crop=${w}:${h}:${x}:${y}`
+  if (sharpen && zoom >= 2) {
+    const dx = x % 8
+    const dy = y % 8
+    chain = `crop=${w + dx}:${h + dy}:${x - dx}:${y - dy},deblock=filter=weak:block=8,crop=${w}:${h}:${dx}:${dy}`
   }
+  chain += `,scale=${r.dst.w}:${r.dst.h}:flags=lanczos+accurate_rnd+full_chroma_int`
+  if (sharpen && zoom > 1.05) chain += `,cas=strength=${Math.min(0.6, 0.3 + 0.12 * (zoom - 1)).toFixed(2)}`
+  return chain
 }
 
 const AUDIO_FMT = 'aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo'
@@ -47,7 +55,7 @@ interface Extra {
 }
 
 /** Construit la commande ffmpeg (entrées + graphe de filtres) pour un clip. */
-export async function buildRender(clip: Clip, fps: number, work: string): Promise<{ inputs: string[]; graph: string; duration: number }> {
+export async function buildRender(clip: Clip, fps: number, work: string, sharpen = true): Promise<{ inputs: string[]; graph: string; duration: number }> {
   const src = await probe(clip.source)
   if (!src.hasVideo || !src.width) throw new Error('La vidéo source du clip est illisible.')
   const look = clip.look
@@ -94,10 +102,9 @@ export async function buildRender(clip: Clip, fps: number, work: string): Promis
   graph.push(`[0:v]fps=${F},setpts=PTS-STARTPTS,split=${regions.length}${labels}`)
   graph.push(`color=c=black:s=${W}x${H}:r=${F}:d=${D.toFixed(3)}[c0]`)
   regions.forEach((r, i) => {
-    const crop = `crop=${r.src.w}:${r.src.h}:${r.src.x}:${r.src.y}`
     const chain = r.blur
-      ? `${crop},scale=${Math.round(r.dst.w / 4)}:${Math.round(r.dst.h / 4)},boxblur=10:2,scale=${r.dst.w}:${r.dst.h},eq=brightness=-0.07`
-      : `${crop},scale=${r.dst.w}:${r.dst.h}:flags=lanczos`
+      ? `crop=${r.src.w}:${r.src.h}:${r.src.x}:${r.src.y},scale=${Math.round(r.dst.w / 4)}:${Math.round(r.dst.h / 4)},boxblur=10:2,scale=${r.dst.w}:${r.dst.h},eq=brightness=-0.07`
+      : scaleChain(r, sharpen)
     graph.push(`[m${i}]${chain},setsar=1[r${i}]`)
     graph.push(`[c${i}][r${i}]overlay=${r.dst.x}:${r.dst.y}:shortest=1[c${i + 1}]`)
   })
@@ -233,7 +240,7 @@ export async function renderClip(clip: Clip, out: string, opts: RenderOptions): 
   mkdirSync(dirname(out), { recursive: true })
   const partial = `${out}.rendu.mp4`
   try {
-    const { inputs, graph, duration } = await buildRender(clip, opts.fps, work)
+    let { inputs, graph, duration } = await buildRender(clip, opts.fps, work)
     writeFileSync(join(work, 'filtres.txt'), graph, 'utf8')
     const attempt = (encoder: string, graphArg: string[]): Promise<RunResult> =>
       ffmpeg([...inputs, ...graphArg, '-map', '[v]', '-map', '[a]', ...encoderArgs(encoder), '-r', String(opts.fps), '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-t', duration.toFixed(3), partial], {
@@ -246,6 +253,12 @@ export async function renderClip(clip: Clip, out: string, opts: RenderOptions): 
     let r = await attempt(opts.encoder, graphArg)
     if (r.code !== 0 && !r.aborted && /Unrecognized option '\/filter_complex'/.test(r.stderr)) {
       graphArg = ['-filter_complex_script', 'filtres.txt']
+      r = await attempt(opts.encoder, graphArg)
+    }
+    // ffmpeg trop ancien pour les filtres de netteté : rendu sans eux plutôt qu'aucun rendu.
+    if (r.code !== 0 && !r.aborted && /No such filter: '(cas|deblock)'/.test(r.stderr)) {
+      ;({ inputs, graph, duration } = await buildRender(clip, opts.fps, work, false))
+      writeFileSync(join(work, 'filtres.txt'), graph, 'utf8')
       r = await attempt(opts.encoder, graphArg)
     }
     // L'encodeur de la carte graphique a échoué : on retente avec l'encodeur logiciel.

@@ -219,7 +219,6 @@ export type WhisperModel = 'base' | 'small' | 'large-v3-turbo'
 export interface Settings {
   recordingsDir: string
   readyDir: string
-  quality: string
   channels: ChannelConfig[]
   hotkey: { enabled: boolean; accelerator: string; before: number }
   detection: DetectionSettings

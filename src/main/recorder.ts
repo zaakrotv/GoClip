@@ -278,7 +278,9 @@ export class ChannelWatcher {
       this.update({ status: 'error', message: 'Le dossier des enregistrements est inaccessible : choisis-en un autre dans Réglages.' })
       return
     }
-    const proc = spawn(exe, ['--no-config', '--loglevel', 'info', '--force', '--output', file, `https://www.twitch.tv/${this.login}`, settings.quality || 'best'], { windowsHide: true })
+    // Toujours la meilleure qualité proposée par la chaîne : le clip vertical agrandit l'image, une
+    // qualité plus basse le rendrait flou.
+    const proc = spawn(exe, ['--no-config', '--loglevel', 'info', '--force', '--output', file, `https://www.twitch.tv/${this.login}`, 'best'], { windowsHide: true })
     this.proc = proc
     this.sessionFiles.push(file)
     this.videoStartedAt = null
